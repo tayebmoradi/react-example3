@@ -2,6 +2,8 @@ import { Outlet } from "react-router-dom";
 import Header from "../layouts/Header"
 import SideBar from "../layouts/SideBar"
 import { useSelector } from "react-redux";
+import Create from "../components/article/Create";
+
 
 function App() {
 
@@ -13,6 +15,7 @@ function App() {
       <div className={sideBarMenu ? 'xl:pl-72' : 'xl:pl-[70px]'}>
         <Header/>
         <main>
+        <Create />
           <Outlet />
         </main>
       </div>
