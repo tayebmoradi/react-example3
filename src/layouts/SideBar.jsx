@@ -8,20 +8,32 @@ import {
 } from '@heroicons/react/24/outline'
 import { useDispatch, useSelector } from 'react-redux'
 import { toggleSideBarMenu } from "../store/slices/sidebarMenuSlice"
+import { NavLink } from 'react-router-dom'
 
 const navigation = [
-  { name: 'Dashboard', href: '#', icon: FolderIcon, current: true },
-  { name: 'Manage Articles', href: '#', icon: ServerIcon, current: false },
+  { name: 'Dashboard', href: '/', icon: FolderIcon, current: true },
+  { name: 'Manage Articles', href: '/articles', icon: ServerIcon, current: false },
 ]
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
+const classLink = ({ isActive, isPending }) =>
+    isActive
+    ? 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold w-full block bg-gray-800 text-white'
+    : isPending
+    ? "pending"
+    : 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold w-full block text-gray-600 hover:text-white hover:bg-gray-800'
+
+ 
+                                            
+
 export default function SideBar() {
+    
     const sideBarMenu = useSelector((state) => state.sideBarMenu.value)
-    console.log(sideBarMenu)
     const dispatch = useDispatch()
+
     return (
         <>
             {/* Static sidebar for Mobile */}
@@ -85,20 +97,16 @@ export default function SideBar() {
                         <li>
                         <ul role="list" className="-mx-2 space-y-1 ">
                             {navigation.map((item) => (
-                            <li key={item.name} >
-                                <a 
-                                href={item.href}
-                                className={classNames(
-                                    item.current
-                                    ? 'bg-gray-800 text-white'
-                                    : 'text-gray-600 hover:text-white hover:bg-gray-800',
-                                    'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold w-full block'
-                                )}
-                                >
-                                <item.icon className="h-6 w-6 shrink-0" aria-hidden="true" />
-                                {sideBarMenu ? item.name : ''}
-                                </a>
-                            </li>
+                                <li key={item.name} >
+                                    <NavLink 
+                                        to={item.href} 
+                                        className={classLink}  
+                                    >
+                                        <item.icon className="h-6 w-6 shrink-0" aria-hidden="true" />
+                                        {sideBarMenu ? item.name : ''}
+                                    </NavLink>
+                                    
+                                </li>
                             ))}
                         </ul>
                         </li>

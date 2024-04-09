@@ -3,6 +3,7 @@ import {createBrowserRouter, RouterProvider,
 import App from "../layouts/App";
 import ErrorPage from '/src/components/ErrorPage';
 import Main from "../components/Main";
+import Index from "../components/article/Index";
 
 
 
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         Component: Main,
+      },
+      {
+        path: "/articles",
+        Component: Index,
       },
     ],
   },
