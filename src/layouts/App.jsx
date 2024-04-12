@@ -15,7 +15,6 @@ function App() {
       <div className={sideBarMenu ? 'xl:pl-72' : 'xl:pl-[70px]'}>
         <Header/>
         <main>
-        <Create />
           <Outlet />
         </main>
       </div>

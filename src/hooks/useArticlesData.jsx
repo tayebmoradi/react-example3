@@ -10,8 +10,9 @@ export default function useArticlesData() {
     useEffect(() => {
         const fetchData = async ()=>{
             setLoading(true);
+            // https://65f2e496105614e6549f327c.mockapi.io/article
             try {
-                let res = await axios.get('https://65f2e496105614e6549f327c.mockapi.io/article')
+                let res = await axios.get('https://65f294dd034bdbecc76532b2.mockapi.io/posts')
                 let data = await res.data
                 if(res.statusText === "OK"){
                     setArticles(data)
