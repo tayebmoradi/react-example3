@@ -47,21 +47,20 @@ const Modal = ({ isOpen, onClose }) => {
                     <div className="w-full flex">
                       <div className='col mr-5'>
                       <input 
-                                value={inputArticle.title}
-                                onChange={inputTitleHandler}
-                                type="text" 
-                                name="title"
-                             
-                                className="w-full p-2 border rounded outline-none border-grey-600"/>
+                        value={inputArticle.title}
+                        onChange={inputTitleHandler}
+                        type="text" 
+                        name="title"
+                        className="w-full text-gray-800 p-2 border rounded outline-none border-grey-600"/>
                               
                       </div>
                       <div className='col'>
                       <input 
-                                value={inputArticle.createdAt}
-                                type="date" 
-                                onChange={inputTitleHandler}
-                                name="createdAt"
-                                className="w-full p-2 border rounded outline-none #f97316 border-grey-600"/>
+                          value={inputArticle.createdAt}
+                          type="date" 
+                          onChange={inputTitleHandler}
+                          name="createdAt"
+                          className="w-full p-2 border rounded outline-none text-gray-800 border-grey-600"/>
                       </div>
                              
                         </div>
