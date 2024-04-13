@@ -3,53 +3,82 @@ import 'react-toastify/dist/ReactToastify.css';
 import useArticlesData from "../../hooks/useArticlesData";
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Create from './Create';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
-
-// const people = [
-//     { name: 'Lindsay Walton', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
-//     // More people...
-//   ] 
 
 function Index()
 {
+    // const [articles, loading, error] = useArticlesData();
 
-    const [articles, loading, error] = useArticlesData();
+    const [articles , setArticles] = useState([])
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+      const fetchData = async ()=>{
+          setLoading(true);
+          // https://65f2e496105614e6549f327c.mockapi.io/article
+          try {
+              let res = await axios.get('https://65f294dd034bdbecc76532b2.mockapi.io/posts')
+              let data = await res.data
+              if(res.statusText === "OK"){
+                  setArticles(data)
+              }else{
+                  setError(res.statusText);
+              }
+          } catch (error) {
+              setError(error.message);
+          } finally {
+              setLoading(false);
+          }
+      }
+      fetchData()
+    }, [])
 
     if (error) toast.error(error)
-
-  
+    
     const [dataIdToDelete, setDataIdToDelete] = useState({
       id: '',
     });
+
     const inputTitleHandler = (event) =>{
       const{name,value} = event.target;
       setDataIdToDelete((prevData) => ({...prevData,[name]:value}));
     };
-    console.log(inputTitleHandler)
     
-   const id =  articles.filter((item)=>
+    const id =  articles.filter((item)=>
     {
       return item.id == dataIdToDelete
     })
 
-    console.log(id)
-    const handleDelete = async () => {
+   
+    const handleDelete = async (idArticle) => {
       try {
-      
-        const response = await axios.delete(
-          `https://65f294dd034bdbecc76532b2.mockapi.io/posts?${id}`,{
-            method:"DELETE"
+        const response = await axios.delete(`https://65f294dd034bdbecc76532b2.mockapi.io/posts/${idArticle}`);
+        let data = await response.data
+          if(response.statusText === "OK"){
+            let data = articles.filter((item) => {
+              return idArticle != item.id 
+            })
+            setArticles(data)
+            toast.success("Success Delete Article")
+            
+          }else{
+            console.log(response.statusText)
+            toast.error(response.statusText)
           }
-        );
-        if(response.ok){
-
-        }
-        console.log('Data deleted successfully:', response.data);
       } catch (error) {
-        console.error('Error deleting data:', error);
+        toast.error(error)
       }
     };
+
+  //   const getArticleFromApi = async () => {
+      
+  //   }
+
+  // useEffect(() => {
+  //     getArticleFromApi();
+  // }, [])
 
     return (
         <div className="px-4 sm:px-6 lg:px-8">
@@ -103,7 +132,7 @@ function Index()
                           <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-xs  sm:pr-6">
                             <a href="#" className="flex text-indigo-600 hover:text-indigo-900">
                               <PencilSquareIcon className='h-6 w-6 shrink-0'/>
-                              <TrashIcon onClick={handleDelete} onChange={article.id} className='h-6 w-6 shrink-0 text-rose-600'/>
+                              <TrashIcon onClick={() => {handleDelete(article.id)}} className='h-6 w-6 shrink-0 text-rose-600'/>
                             </a>
                           </td>
                         </tr>
