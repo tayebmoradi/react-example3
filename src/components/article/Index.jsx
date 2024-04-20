@@ -3,8 +3,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import useArticlesData from "../../hooks/useArticlesData";
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Create from './Create';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { addArticleContext } from "../../context/addArticleContext"
 import axios from 'axios';
+import Edit from './Edit';
 
 function Index()
 {
@@ -14,12 +16,16 @@ function Index()
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    const url = new URL('https://65f2e496105614e6549f327c.mockapi.io/article/');
+    
     useEffect(() => {
       const fetchData = async ()=>{
           setLoading(true);
-          // https://65f2e496105614e6549f327c.mockapi.io/article
+          let urlGetArticle = url;
+          urlGetArticle.searchParams.append('sortBy', 'id');
+          urlGetArticle.searchParams.append('order', 'desc');
           try {
-              let res = await axios.get('https://65f294dd034bdbecc76532b2.mockapi.io/posts')
+              let res = await axios.get(urlGetArticle)
               let data = await res.data
               if(res.statusText === "OK"){
                   setArticles(data)
@@ -37,24 +43,25 @@ function Index()
 
     if (error) toast.error(error)
     
-    const [dataIdToDelete, setDataIdToDelete] = useState({
-      id: '',
-    });
-
-    const inputTitleHandler = (event) =>{
-      const{name,value} = event.target;
-      setDataIdToDelete((prevData) => ({...prevData,[name]:value}));
-    };
-    
-    const id =  articles.filter((item)=>
+    const handelAdd = async (title)=>
     {
-      return item.id == dataIdToDelete
-    })
+      try {
+        const response = await axios.post(url, title)
+        let data = await response.data
+        setArticles([...articles, data])
+      } catch (error) {
+        toast.error('Error adding data: ', error);
+      } 
+    }
 
-   
+    const handelEdit = async (title)=>
+    {
+      console.log('Edit Test')
+    }
+
     const handleDelete = async (idArticle) => {
       try {
-        const response = await axios.delete(`https://65f294dd034bdbecc76532b2.mockapi.io/posts/${idArticle}`);
+        const response = await axios.delete(url+idArticle);
         let data = await response.data
           if(response.statusText === "OK"){
             let data = articles.filter((item) => {
@@ -72,14 +79,6 @@ function Index()
       }
     };
 
-  //   const getArticleFromApi = async () => {
-      
-  //   }
-
-  // useEffect(() => {
-  //     getArticleFromApi();
-  // }, [])
-
     return (
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="sm:flex sm:items-center">
@@ -95,7 +94,10 @@ function Index()
               <button
                 type="button"
                 className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mt-10">
-                    <Create className="mt-10" />
+                    {/* <addArticleContext.Provider value={handelAdd}> */}
+                      <Create className="mt-10" handelAdd={handelAdd} />
+                    {/* </addArticleContext.Provider> */}
+                    
               </button>
             </div>
           </div>
@@ -128,10 +130,12 @@ function Index()
                           <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                             {article.title}
                           </td>
-                          <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{article.createdAt}</td>
+                          <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                            {article.createdAt}
+                          </td>
                           <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-xs  sm:pr-6">
                             <a href="#" className="flex text-indigo-600 hover:text-indigo-900">
-                              <PencilSquareIcon className='h-6 w-6 shrink-0'/>
+                              <Edit handelEdit={handelEdit} />
                               <TrashIcon onClick={() => {handleDelete(article.id)}} className='h-6 w-6 shrink-0 text-rose-600'/>
                             </a>
                           </td>

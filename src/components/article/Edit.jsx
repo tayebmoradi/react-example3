@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Modal from './Modal';
+import { PencilSquareIcon } from '@heroicons/react/24/outline';
 
-export default function Create({handelAdd}) {
+export default function Edit({handelAdd}) {
 
   // State to manage modal visibility
   const [isOpen, setIsOpen] = useState(false);
@@ -14,9 +15,7 @@ export default function Create({handelAdd}) {
 
   return (
     <div className="App">
-      <button onClick={openModal} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Add Article
-      </button>
+      <PencilSquareIcon className='h-6 w-6 shrink-0'/>
       <Modal isOpen={isOpen} onClose={closeModal} handelAdd={handelAdd} />
     </div>
   )
